@@ -5,6 +5,7 @@ if (!window.i18n) {
     window.i18n = {
         languages: {},
         curLang:''
+
     };
 }
 
