@@ -44,18 +44,20 @@ cc.Class({
       }
     },
     _dataID: '',
-    customData: {
+    localizedData: {
       get () {
-        return this._customData
+        return this._localizedData
       },
       set (val) {
-        if (this._customData !== val) {
-          this._customData = val
+        if (this._localizedData !== val) {
+          this._localizedData = val
+          !this._fetchRender && this.fetchRender()
           this.updateLabel()
         }
       }
     },
-    _customData: null
+    _localizedData: null,
+    _fetchRender: false
   },
 
   onLoad () {
@@ -70,6 +72,7 @@ cc.Class({
   },
 
   fetchRender () {
+    this._fetchRender = true
     let label = this.getComponent(cc.Label)
     if (label) {
       this.label = label
@@ -83,13 +86,13 @@ cc.Class({
       cc.error('Failed to update localized label, label component is invalid!', this.node.name)
       return
     }
-    if (this._customData) {
-      // console.log('----this._customData:', this._customData, window.i18n.curLang)
-      this.label.string = this._customData[window.i18n.curLang]
+    if (this._localizedData) {
+      // console.log('----this._localizedData:', this._localizedData, window.i18n.curLang)
+      this.label.string = this._localizedData[window.i18n.curLang]
     } else {
       let localizedString = i18n.t(this.dataID)
       if (localizedString) {
-        this.label.string = i18n.t(this.dataID)
+        this.label.string = localizedString
       }
     }
   }
