@@ -30,6 +30,7 @@ cc.Class({
   },
 
   setSpriteFrameByLang (language, spriteFrame = null) {
+    console.log('----language:', language)
     if (spriteFrame) {
       let spriteFrameSet = this.getSpriteFrameByLang(language, true)
       if (spriteFrameSet) {
