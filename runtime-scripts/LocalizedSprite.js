@@ -1,54 +1,76 @@
-const SpriteFrameSet = require('SpriteFrameSet');
+const SpriteFrameSet = require('SpriteFrameSet')
 
 cc.Class({
-    extends: cc.Component,
+  extends: cc.Component,
 
-    editor: {
-        executeInEditMode: true,
-        inspector: 'packages://i18n/inspector/localized-sprite.js',
-        menu: 'i18n/LocalizedSprite'
-    },
+  editor: {
+    executeInEditMode: true,
+    inspector: 'packages://i18n/inspector/localized-sprite.js',
+    menu: 'i18n/LocalizedSprite'
+  },
 
-    properties: {
-        spriteFrameSet: {
-            default: [],
-            type: SpriteFrameSet
-        }
-    },
-
-    onLoad () {
-        this.fetchRender();
-    },
-
-    fetchRender () {
-        let sprite = this.getComponent(cc.Sprite);
-        if (sprite) {
-            this.sprite = sprite;
-            this.updateSprite(window.i18n.curLang);
-            return;
-        }
-    },
-
-    getSpriteFrameByLang (lang) {
-        for (let i = 0; i < this.spriteFrameSet.length; ++i) {
-            if (this.spriteFrameSet[i].language === lang) {
-                return this.spriteFrameSet[i].spriteFrame;
-            }
-        }
-    },
-
-    updateSprite (language) {
-        if (!this.sprite) {
-            cc.error('Failed to update localized sprite, sprite component is invalid!');
-            return;
-        }
-
-        let spriteFrame = this.getSpriteFrameByLang(language);
-
-        if (!spriteFrame && this.spriteFrameSet[0]) {
-            spriteFrame = this.spriteFrameSet[0].spriteFrame;
-        }
-
-        this.sprite.spriteFrame = spriteFrame;
+  properties: {
+    spriteFrameSet: {
+      default: [],
+      type: SpriteFrameSet
     }
-});
+  },
+
+  onLoad () {
+    this.fetchRender()
+  },
+
+  fetchRender () {
+    let sprite = this.getComponent(cc.Sprite)
+    if (sprite) {
+      this.sprite = sprite
+      this.updateSprite(window.i18n.curLang)
+      return
+    }
+  },
+
+  setSpriteFrameByLang (language, spriteFrame = null) {
+    if (spriteFrame) {
+      let spriteFrameSet = this.getSpriteFrameByLang(language, true)
+      if (spriteFrameSet) {
+        spriteFrameSet.spriteFrame = spriteFrame
+      } else {
+        this.spriteFrameSet.push({language, spriteFrame})
+      }
+    } else {
+      for (let data of language) {
+        let spriteFrameSet = this.getSpriteFrameByLang(data.language, true)
+        if (spriteFrameSet) {
+          spriteFrameSet.spriteFrame = data.spriteFrame
+        } else {
+          this.spriteFrameSet.push({language: data.language, spriteFrame: data.spriteFrame})
+        }
+      }
+    }
+  },
+
+  getSpriteFrameByLang (lang, getSpriteFrameSet = false) {
+    for (let i = 0; i < this.spriteFrameSet.length; ++i) {
+      if (this.spriteFrameSet[i].language === lang) {
+        return getSpriteFrameSet ? this.spriteFrameSet[i] : this.spriteFrameSet[i].spriteFrame
+      }
+    }
+  },
+
+  updateSprite (language) {
+    if (!this.sprite) {
+      cc.error('Failed to update localized sprite, sprite component is invalid!')
+      return
+    }
+
+    let spriteFrame = this.getSpriteFrameByLang(language)
+
+    if (!spriteFrame && this.spriteFrameSet[0]) {
+      spriteFrame = this.spriteFrameSet[0].spriteFrame
+    }
+
+    if (spriteFrame) {
+      this.sprite.spriteFrame = spriteFrame
+    }
+  }
+})
