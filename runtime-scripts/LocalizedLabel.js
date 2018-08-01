@@ -51,8 +51,11 @@ cc.Class({
       set (val) {
         if (this._localizedData !== val) {
           this._localizedData = val
-          !this._fetchRender && this.fetchRender()
-          this.updateLabel()
+          if (!this._fetchRender) {
+            this.fetchRender()
+          } else {
+            this.updateLabel()
+          }
         }
       }
     },
@@ -83,7 +86,7 @@ cc.Class({
 
   updateLabel () {
     if (!this.label) {
-      cc.error('Failed to update localized label, label component is invalid!', this.node.name)
+      cc.warn('Failed to update localized label, label component is invalid!', this.node.name)
       return
     }
     if (this._localizedData) {
