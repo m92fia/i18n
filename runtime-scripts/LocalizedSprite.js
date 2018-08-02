@@ -60,7 +60,10 @@ cc.Class({
 
   updateSprite (language) {
     if (!this.sprite) {
-      cc.error('Failed to update localized sprite, sprite component is invalid!')
+      // xf: 如果当前节点未激活，则取不到 sprite，所以有可能是误报
+      if (this.node.activeInHierarchy) {
+        cc.warn('Failed to update localized sprite, sprite component is invalid!', this.node.name)
+      }
       return
     }
 

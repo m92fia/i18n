@@ -86,9 +86,13 @@ cc.Class({
 
   updateLabel () {
     if (!this.label) {
-      cc.warn('Failed to update localized label, label component is invalid!', this.node.name)
+      // xf: 如果当前节点未激活，则取不到 label，所以有可能是误报
+      if (this.node.activeInHierarchy) {
+        cc.warn('Failed to update localized label, label component is invalid!', this.node.name)
+      }
       return
     }
+
     if (this._localizedData) {
       // console.log('----this._localizedData:', this._localizedData, window.i18n.curLang)
       this.label.string = this._localizedData[window.i18n.curLang]
