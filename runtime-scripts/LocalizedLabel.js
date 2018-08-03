@@ -95,7 +95,7 @@ cc.Class({
 
     if (this._localizedData) {
       // console.log('----this._localizedData:', this._localizedData, window.i18n.curLang)
-      this.label.string = this._localizedData[window.i18n.curLang]
+      this.label.string = typeof this._localizedData === 'string' ? this._localizedData : this._localizedData[window.i18n.curLang]
     } else {
       let localizedString = i18n.t(this.dataID)
       if (localizedString) {
