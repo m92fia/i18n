@@ -87,7 +87,7 @@ cc.Class({
   updateLabel () {
     if (!this.label) {
       // xf: 如果当前节点未激活，则取不到 label，所以有可能是误报
-      if (this.node.activeInHierarchy) {
+      if (this.node && cc.isValid(this.node) && this.node.activeInHierarchy) {
         cc.warn('Failed to update localized label, label component is invalid!', this.node.name)
       }
       return
