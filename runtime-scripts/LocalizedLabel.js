@@ -44,6 +44,22 @@ cc.Class({
       }
     },
     _dataID: '',
+    params: {
+      get () {
+        return this._params
+      },
+      set (val) {
+        if (this._params !== val && val instanceof Object && !(val instanceof Array)) {
+          this._params = val
+          if (!this._fetchRender) {
+            this.fetchRender()
+          } else {
+            this.updateLabel()
+          }
+        }
+      }
+    },
+    _params: null,
     localizedData: {
       get () {
         return this._localizedData
@@ -59,7 +75,7 @@ cc.Class({
         }
       }
     },
-    _localizedData: null,
+    _localizedData: '',
     _fetchRender: false
   },
 
@@ -97,7 +113,7 @@ cc.Class({
       // console.log('----this._localizedData:', this._localizedData, window.i18n.curLang)
       this.label.string = typeof this._localizedData === 'string' ? this._localizedData : this._localizedData[window.i18n.curLang]
     } else {
-      let localizedString = i18n.t(this.dataID)
+      let localizedString = i18n.t(this.dataID, this._params || {})
       if (localizedString) {
         this.label.string = localizedString
       }
